@@ -2,13 +2,18 @@
     "docs": [
         {
             "location": "/", 
-            "text": "PTXConf documentation\n\n\nPen tablet and Touch screen Xinput Configuration tool (PTXConf). \nConfigures touch/pen devices to work with extended desktops and multiple screens on Linux.", 
+            "text": "PTXConf documentation\n\n\nPen tablet and Touch screen Xinput Configuration tool (PTXConf). \nConfigures touch/pen devices to work with extended desktops and multiple screens on Linux.\n\n\nCode examples\n\n\nSome dummy code for testing MD...\n\n\nfrom ptxconftools import ConfController\ncc = ConfController()\ncc.listDevices()\n\nfor i in range(10):\n    print i", 
             "title": "Home"
         }, 
         {
             "location": "/#ptxconf-documentation", 
             "text": "Pen tablet and Touch screen Xinput Configuration tool (PTXConf). \nConfigures touch/pen devices to work with extended desktops and multiple screens on Linux.", 
             "title": "PTXConf documentation"
+        }, 
+        {
+            "location": "/#code-examples", 
+            "text": "Some dummy code for testing MD...  from ptxconftools import ConfController\ncc = ConfController()\ncc.listDevices()\n\nfor i in range(10):\n    print i", 
+            "title": "Code examples"
         }
     ]
 }
