@@ -2,12 +2,15 @@ import sys
 import subprocess
 
 class ConfController():
+    """This class exposes information about pen/tablet pointing device configuration
+    and gives methods for reconfiguring those devices"""
     penIds = None
 
     def __init__(self):
         self.penIds = self.getPenIds()
 
     def getPenIds(self):
+        """Returns a list of input ids for all available pen/tablet xinput devices"""
         retval = subprocess.Popen("xinput list", shell=True, stdout=subprocess.PIPE).stdout.read()
 
         ids = []
