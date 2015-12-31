@@ -14,6 +14,26 @@
             "location": "/#code-examples", 
             "text": "Some dummy code for testing MD...  from ptxconftools import ConfController\ncc = ConfController()\ncc.listDevices()\n\nfor i in range(10):\n    print i", 
             "title": "Code examples"
+        }, 
+        {
+            "location": "/API/", 
+            "text": "Module confcontroller\n\n\nClasses\n\n\nConfController\n\n\nThis class exposes information about pen/tablet pointing device configuration\nand gives methods for reconfiguring those devices\n\n\nAncestors (in MRO)\n\n\nconfcontroller.ConfController\n\n\nClass variables\n\n\npenIds\n\n\nInstance variables\n\n\npenIds\n\n\nMethods\n\n\ninit\n(self)\n\n\ngetDeviceConfig(self, id)\n\n\ngetPenIds(self)\n\n\nReturns a list of input ids for all available pen/tablet xinput devices\n\n\nresetDeviceConfig(self, id)\n\n\nsetDeviceConfig(self, id)", 
+            "title": "API"
+        }, 
+        {
+            "location": "/API/#module-confcontroller", 
+            "text": "", 
+            "title": "Module confcontroller"
+        }, 
+        {
+            "location": "/API/#classes", 
+            "text": "", 
+            "title": "Classes"
+        }, 
+        {
+            "location": "/API/#confcontroller", 
+            "text": "This class exposes information about pen/tablet pointing device configuration\nand gives methods for reconfiguring those devices  Ancestors (in MRO)  confcontroller.ConfController  Class variables  penIds  Instance variables  penIds  Methods  init (self)  getDeviceConfig(self, id)  getPenIds(self)  Returns a list of input ids for all available pen/tablet xinput devices  resetDeviceConfig(self, id)  setDeviceConfig(self, id)", 
+            "title": "ConfController"
         }
     ]
 }
