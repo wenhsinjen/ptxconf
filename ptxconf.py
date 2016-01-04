@@ -1,15 +1,19 @@
 #! /usr/bin/python
-
+import ptxconftools
 from ptxconftools import ConfController
 import pygtk
 import appindicator
 pygtk.require('2.0')
 import gtk
+import os
+
+iconpath = os.path.dirname( ptxconftools.__file__ )+"/iconStyle03_256.png"
+print iconpath
 
 class PTXConfUI():
     def __init__(self):
         # create systray interface
-        self.systray = appindicator.Indicator( "testname", "/home/hrobjartur/Downloads/facebook56.png", appindicator.CATEGORY_APPLICATION_STATUS)
+        self.systray = appindicator.Indicator( "testname", iconpath, appindicator.CATEGORY_APPLICATION_STATUS)
         self.systray.set_status(appindicator.STATUS_ACTIVE)
 
         # construct menu
