@@ -57,7 +57,11 @@
             
                 <li class="toctree-l3"><a href="#ptxconf-documentation">PTXConf documentation</a></li>
                 
-                    <li><a class="toctree-l4" href="#code-examples">Code examples</a></li>
+                    <li><a class="toctree-l4" href="#usage">Usage</a></li>
+                
+                    <li><a class="toctree-l4" href="#installation">Installation</a></li>
+                
+                    <li><a class="toctree-l4" href="#api-code-examples">API code examples</a></li>
                 
             
             </ul>
@@ -107,14 +111,29 @@
                 <h1 id="ptxconf-documentation">PTXConf documentation</h1>
 <p>Pen tablet and Touch screen Xinput Configuration tool (PTXConf). 
 Configures touch/pen devices to work with extended desktops and multiple screens on Linux.</p>
-<h2 id="code-examples">Code examples</h2>
+<h2 id="usage">Usage</h2>
+<p>TODO...</p>
+<h2 id="installation">Installation</h2>
+<p>PTXConf depends on the python gtk2 and the AppIndicator binding. On debian based systems you can install these packages as follows,</p>
+<pre><code class="sh">$ sudo apt-get install python-gtk2
+$ sudo apt-get install python-appindicator
+</code></pre>
+
+<p>Then install this package,</p>
+<pre><code class="sh">$ git clone http://github.com/wenhsinjen/ptxconf.git
+$ cd ptxconf
+$ sudo python setup.py install
+</code></pre>
+
+<p>After this package has been submitted to PyPI you will be able to do,</p>
+<pre><code class="sh">$ sudo pip install ptxconf
+</code></pre>
+
+<h2 id="api-code-examples">API code examples</h2>
 <p>Some dummy code for testing MD...</p>
 <pre><code class="python">from ptxconftools import ConfController
 cc = ConfController()
 cc.listDevices()
-
-for i in range(10):
-    print i
 </code></pre>
               
             </div>
@@ -161,5 +180,5 @@ for i in range(10):
 
 <!--
 MkDocs version : 0.14.0
-Build Date UTC : 2015-12-31 09:44:38.170407
+Build Date UTC : 2016-01-04 04:18:41.380270
 -->

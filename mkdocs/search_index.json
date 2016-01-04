@@ -2,7 +2,7 @@
     "docs": [
         {
             "location": "/", 
-            "text": "PTXConf documentation\n\n\nPen tablet and Touch screen Xinput Configuration tool (PTXConf). \nConfigures touch/pen devices to work with extended desktops and multiple screens on Linux.\n\n\nCode examples\n\n\nSome dummy code for testing MD...\n\n\nfrom ptxconftools import ConfController\ncc = ConfController()\ncc.listDevices()\n\nfor i in range(10):\n    print i", 
+            "text": "PTXConf documentation\n\n\nPen tablet and Touch screen Xinput Configuration tool (PTXConf). \nConfigures touch/pen devices to work with extended desktops and multiple screens on Linux.\n\n\nUsage\n\n\nTODO...\n\n\nInstallation\n\n\nPTXConf depends on the python gtk2 and the AppIndicator binding. On debian based systems you can install these packages as follows,\n\n\n$ sudo apt-get install python-gtk2\n$ sudo apt-get install python-appindicator\n\n\n\n\nThen install this package,\n\n\n$ git clone http://github.com/wenhsinjen/ptxconf.git\n$ cd ptxconf\n$ sudo python setup.py install\n\n\n\n\nAfter this package has been submitted to PyPI you will be able to do,\n\n\n$ sudo pip install ptxconf\n\n\n\n\nAPI code examples\n\n\nSome dummy code for testing MD...\n\n\nfrom ptxconftools import ConfController\ncc = ConfController()\ncc.listDevices()", 
             "title": "Home"
         }, 
         {
@@ -11,9 +11,19 @@
             "title": "PTXConf documentation"
         }, 
         {
-            "location": "/#code-examples", 
-            "text": "Some dummy code for testing MD...  from ptxconftools import ConfController\ncc = ConfController()\ncc.listDevices()\n\nfor i in range(10):\n    print i", 
-            "title": "Code examples"
+            "location": "/#usage", 
+            "text": "TODO...", 
+            "title": "Usage"
+        }, 
+        {
+            "location": "/#installation", 
+            "text": "PTXConf depends on the python gtk2 and the AppIndicator binding. On debian based systems you can install these packages as follows,  $ sudo apt-get install python-gtk2\n$ sudo apt-get install python-appindicator  Then install this package,  $ git clone http://github.com/wenhsinjen/ptxconf.git\n$ cd ptxconf\n$ sudo python setup.py install  After this package has been submitted to PyPI you will be able to do,  $ sudo pip install ptxconf", 
+            "title": "Installation"
+        }, 
+        {
+            "location": "/#api-code-examples", 
+            "text": "Some dummy code for testing MD...  from ptxconftools import ConfController\ncc = ConfController()\ncc.listDevices()", 
+            "title": "API code examples"
         }, 
         {
             "location": "/API/", 
