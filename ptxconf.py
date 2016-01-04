@@ -38,10 +38,14 @@ class PTXConfUI():
 
     def createDummyWindow(self, callback_data=None):
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+        self.window.set_position(gtk.WIN_POS_CENTER)
+        self.window.set_title("PTXConf")
+        self.window.connect("destroy", self.destroyDummyWindow)
         entry = gtk.Entry()
         button_ok = gtk.Button("OK")
         button_cancel = gtk.Button("Cancel")
         button_cancel.connect("clicked", self.destroyDummyWindow)
+        button_ok.connect("clicked", self.destroyDummyWindow)
         vbox = gtk.VBox()
         vbox.pack_start(entry)
         hbox = gtk.HBox()
