@@ -60,9 +60,20 @@ class ConfController():
         command = subprocess.Popen("xinput set-prop %d 'Coordinate Transformation Matrix' 1 0 0 0 1 0 0 0 1" % id, shell=True, stdout=subprocess.PIPE).stdout.read()
         return command
 
-    def setPen2Monitor(pen_id,monitor_id):
-        """Configure pen to control monitor"""
+    # def resetAllDeviceConfig(self):
+    #    for i in self.penIds[i]:
+    #        command = subprocess.Popen("xinput set-prop %d 'Coordinate Transformation Matrix' 1 0 0 0 1 0 0 0 1" % i["id"], shell=True, stdout=subprocess.PIPE).stdout.read()
+    #    return command
 
-def CTMGenerator( display_width, screen_width, screen_offset ):
+    def setPen2Monitor(self, pen, monitor):
+        """Configure pen to control monitor"""
+        penid = self.penIds[pen]["id"]
+        p_width = self.monitorIds[monitor]["w"]
+        p_Xoffset = self.monitorIds[monitor]["x"]
+        ctm = CTMGenerator(self.display["w"], p_width, p_Xoffset)
+        self.resetDeviceConfig(penid)
+        self.setDeviceConfig(penid, ctm)
+
+def CTMGenerator( display_width, monitor_width, monitor_offset ):
     """generate coordinate transform matrix for a tablet controlling screen out of n_screens in a row"""
-    return "%f 0 %f 0 1 0 0 0 1"%(float(screen_width)/display_width, float(screen_offset)/display_width)
+    return "%f 0 %f 0 1 0 0 0 1"%(float(monitor_width)/display_width, float(monitor_offset)/display_width)

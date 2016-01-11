@@ -18,10 +18,7 @@ class PTXConfUI():
 
         # construct menu
         menu = gtk.Menu()
-        mitem = gtk.MenuItem("option1")
-        menu.append(mitem)
-        mitem.show()
-        mitem = gtk.MenuItem("dummy window")
+        mitem = gtk.MenuItem("configure")
         menu.append(mitem)
         mitem.connect("activate", self.createDummyWindow)
         mitem.show()
@@ -32,35 +29,41 @@ class PTXConfUI():
 
         # attach menu to out system tray
         self.systray.set_menu(menu)
-
+        
         # instantiate confcontroller
         self.myConf = ConfController()
 
-    def resetConfig(self, callback_data=None):
-        # find ids for the right input device
-        myid = self.myConf.penIds
-        a = myid[0]
-        # reset matrixes to 0s
-        self.myConf.resetDeviceConfig(a)
-        # print in terminal what id of the device was used
-        print a
+    # def resetAllConfig(self, callback_data=None):
+    #    self.myConf.resetAllDeviceConfig()
+
+    def getActiveInput(self):
+        a = self.window.dropDown01.get_active_text()
+        b = self.window.dropDown01.get_active()
+        if b > 0:
+            return a
+        
+    def getSelectedDisplay(self, callback_data=None):
+        a = self.window.dropDown02.get_active_text()
+        b = self.window.dropDown02.get_active()
+        # myDisplay = self.myConf.monitorIds["a"]
+        if b > 0: 
+            # print self.myConf.monitorIds[a]
+            # c{} = self.myConf.monitorIds[a]
+            return a
 
     def mapTabletToDisplay(self, callback_data=None):
         # find ids for the right input device
-        myid = self.myConf.penIds
-        a = myid[0]
-        # first reset Transformation Matrixs back to 0
-        self.myConf.resetDeviceConfig(a)
-        # then set the Transformation Matrix(currently only set to the 2nd screen out of 2 displays)
-        self.myConf.setDeviceConfig(a)
-        # print in terminal what id of the device was used
-        print a
+        pen = self.getActiveInput()
+        # get the display width, screen_width and screen_offset for CTMGenerator function to calculate matrix
+        monitor = self.getSelectedDisplay()
+        # call API with these settings
+        self.myConf.setPen2Monitor(pen, monitor)
 
-    def cancelAndDestroyDummyWindow(self, callback_data=None):
-        # undo or reset config by calling the reset function
-        self.resetConfig()
-        # close the popup window by calling the destroyDummyWindow function
-        self.destroyDummyWindow()
+    # def cancelAndDestroyDummyWindow(self, callback_data=None):
+    #    # undo or reset config by calling the reset function
+    #    self.resetAllConfig()
+    #    # close the popup window by calling the destroyDummyWindow function
+    #    self.destroyDummyWindow()
 
     def exit_program(self, callback_data=None):
         # This function kills the program PTXConf.
@@ -76,12 +79,11 @@ class PTXConfUI():
         self.window.set_title("PTXConf")
         self.window.connect("destroy", self.destroyDummyWindow)
         
-        button_set = gtk.Button("Set Tablet to Right of 2 Displays")
-        button_cancel = gtk.Button("Cancel")
-        button_cancel.connect("clicked", self.cancelAndDestroyDummyWindow)
-        button_set.connect("clicked", self.mapTabletToDisplay)
-        button_reset = gtk.Button("Reset")
-        button_reset.connect("clicked", self.resetConfig)
+        button_apply = gtk.Button("Apply")
+        # button_cancel = gtk.Button("Cancel")
+        # button_cancel.connect("clicked", self.cancelAndDestroyDummyWindow)
+        # button_reset = gtk.Button("Reset")
+        # button_reset.connect("clicked", self.resetAllConfig)
         button_exit = gtk.Button("Exit")
         # button_exit.connect("clicked", self.destroyDummyWindow)
         button_exit.connect("clicked", self.exit_program)
@@ -89,36 +91,52 @@ class PTXConfUI():
         hbox01 = gtk.HBox()
         hbox02 = gtk.HBox()
         hbox03 = gtk.HBox()
-        label01 = gtk.Label(" Number of Displays ")
-        label02 = gtk.Label(" Mapping to Position ")
-        # drop down menus are not doing anything.
-        # Future goal is to detect number of screens and which screens to map to. 
+        label01 = gtk.Label(" tablet id ")
+        label02 = gtk.Label(" select screen ")
+        # dropdown menus 1 and 2, users choose what input device map to what monitor.
+        # creat and set up dopdownmenu 1: user select from a list of connected pen input deivces. 
         dropDown01 = gtk.combo_box_new_text()
-        dropDown01.append_text('Select a number:')
-        dropDown01.append_text('1')
-        dropDown01.append_text('2')
-        dropDown01.append_text('3')
+        dropDown01.set_tooltip_text("choose an input device to configure")
+        # getting the list of names of the input device
+        # set up the dropdown selection for input devices
+        dropDown01.append_text('Select input device:')
+        for i in self.myConf.penIds:
+            dropDown01.append_text(i)
         dropDown01.set_active(0)
+        # dropDown01.connect("changed", self.getActiveInput)
+        # creat and set up dopdownmenu 2: user select from a list of connected display/output deivces.
         dropDown02 = gtk.combo_box_new_text()
-        dropDown02.append_text('Select a position:')
-        dropDown02.append_text('Left')
-        dropDown02.append_text('Center')
-        dropDown02.append_text('Right')
+        dropDown02.set_tooltip_text("choose a Display device to map the input to")
+        # getting the list of display names
+        # set up the dropdown selection for monitors
+        dropDown02.append_text('Select a monitor:')
+        for i in self.myConf.monitorIds:
+            dropDown02.append_text(i)
         dropDown02.set_active(0)
+        dropDown02.connect("changed", self.getSelectedDisplay)
+
+        # connect apply button to function
+        button_apply.connect("clicked", self.mapTabletToDisplay)
+        
+        
         # inserting all widgets in place
         hbox01.pack_start(label01)
         hbox01.pack_start(dropDown01)
         hbox02.pack_start(label02)
         hbox02.pack_start(dropDown02)
-        hbox03.pack_start(button_set)
-        hbox03.pack_start(button_cancel)
-        hbox03.pack_start(button_reset)
+        hbox03.pack_start(button_apply)
+        # hbox03.pack_start(button_cancel)
+        # hbox03.pack_start(button_reset)
         hbox03.pack_start(button_exit)
 	vbox.pack_start(hbox01)
         vbox.pack_start(hbox02)
         vbox.pack_start(hbox03)
         self.window.add(vbox)
         self.window.show_all()
+
+        # store convenient handle to drop down boxes
+        self.window.dropDown01 = dropDown01
+        self.window.dropDown02 = dropDown02
 
     def destroyDummyWindow(self, callback_data=None):
         # close the popup window, app will still be docked on top menu bar.
