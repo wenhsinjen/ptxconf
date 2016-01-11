@@ -15,25 +15,27 @@ class ConfController():
         """Returns a list of input id/name pairs for all available pen/tablet xinput devices"""
         retval = subprocess.Popen("xinput list", shell=True, stdout=subprocess.PIPE).stdout.read()
 
-        ids = []
+        ids = {}
 	for line in retval.split("]"):
             if "pen" in line.lower():
-                ids.append( (int(line.split("id=")[1].split("[")[0].strip()), line.split("id=")[0].split("\xb3",1)[1].strip() ) )
+                id = int(line.split("id=")[1].split("[")[0].strip())
+                name = line.split("id=")[0].split("\xb3",1)[1].strip()
+                ids[name]={"id":id}
         return ids
 
     def getMonitorIds(self):
         """Returns a list of screens composing the default x-display"""
         retval = subprocess.Popen("xrandr", shell=True, stdout=subprocess.PIPE).stdout.read()
 
-        display0_dim = [None,None]
-        monitors = []
+        display0_dim = {"w":None,"h":None}
+        monitors = {}
         for line in retval.split("\n"):
             if "Screen 0" == line[:8]:
                 # here the xrandr dev meant to call it display 0 in line with xorg.
                 for part in line.split(", "):
                     if "current" in part:
-                        display0_dim[0] = int(part.split("current")[1].split("x")[0])
-                        display0_dim[1] = int(part.split("current")[1].split("x")[1])
+                        display0_dim["w"] = int(part.split("current")[1].split("x")[0])
+                        display0_dim["h"] = int(part.split("current")[1].split("x")[1])
             elif "connected" in line and "disconnected" not in line:
                 port = line.split(" ")[0]
                 placement = line.split("(")[0].strip().split(" ")[-1]
@@ -41,7 +43,8 @@ class ConfController():
                 h = int( placement.split("x")[1].split("+")[0] )
                 x = int( placement.split("x")[1].split("+")[1] )
                 y = int( placement.split("x")[1].split("+")[2] )
-                monitors.append((port,(w,h,x,y)))
+                mon_name = port
+                monitors[mon_name]={"w":w,"h":h,"x":x,"y":y}
 
         return monitors, display0_dim
 
@@ -57,8 +60,8 @@ class ConfController():
         command = subprocess.Popen("xinput set-prop %d 'Coordinate Transformation Matrix' 1 0 0 0 1 0 0 0 1" % id, shell=True, stdout=subprocess.PIPE).stdout.read()
         return command
 
-
-
+    def setPen2Monitor(pen_id,monitor_id):
+        """Configure pen to control monitor"""
 
 def CTMGenerator( display_width, screen_width, screen_offset ):
     """generate coordinate transform matrix for a tablet controlling screen out of n_screens in a row"""
