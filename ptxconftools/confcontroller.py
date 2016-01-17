@@ -1,6 +1,12 @@
 import sys
 import subprocess
 
+try:
+    import configparser
+except:
+    import ConfigParser as configparser
+
+
 class ConfController():
     """This class exposes information about pen/tablet pointing device configuration
     and gives methods for reconfiguring those devices"""
@@ -11,13 +17,26 @@ class ConfController():
         self.penIds = self.getPenIds()
         self.monitorIds, self.display = self.getMonitorIds()
 
+    def refresh(self):
+        self.refreshMonitorIds()
+        self.refreshPenIds()
+
+    def refreshMonitorIds(self):
+        """reload monitor layout information """
+        self.monitorIds, self.display = self.getMonitorIds()
+
+    def refreshPenIds(self):
+        """reload pen/touch tabled ids"""
+        self.penIds = self.getPenIds()
+
     def getPenIds(self):
         """Returns a list of input id/name pairs for all available pen/tablet xinput devices"""
         retval = subprocess.Popen("xinput list", shell=True, stdout=subprocess.PIPE).stdout.read()
 
         ids = {}
 	for line in retval.split("]"):
-            if "pen" in line.lower():
+            if "pointer" in line.lower() and "master" not in line.lower():
+            #if "pen" in line.lower() and "pointer" in line.lower() and "master" not in line.lower():
                 id = int(line.split("id=")[1].split("[")[0].strip())
                 name = line.split("id=")[0].split("\xb3",1)[1].strip()
                 ids[name]={"id":id}

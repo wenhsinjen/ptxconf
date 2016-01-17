@@ -64,6 +64,9 @@ class PTXConfUI():
         gtk.main_quit()
 
     def createConfigWindow(self, callback_data=None):
+        # first refress all monitor and touch/pen information
+        self.myConf.refresh()
+
         # This creats a popup window for more detailed configuration if user find necessary.
         # Still incomplete at the moment.
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
@@ -72,15 +75,15 @@ class PTXConfUI():
         self.window.connect("destroy", self.destroyConfigWindow)
         
         button_apply = gtk.Button("Apply")
-        button_exit = gtk.Button("Exit")
+        button_close = gtk.Button("Close")
 
-        button_exit.connect("clicked", self.exit_program)
+        button_close.connect("clicked", self.destroyConfigWindow)
         vbox = gtk.VBox()
         hbox01 = gtk.HBox()
         hbox02 = gtk.HBox()
         hbox03 = gtk.HBox()
-        label01 = gtk.Label(" tablet id ")
-        label02 = gtk.Label(" select screen ")
+        label01 = gtk.Label("tablet id")
+        label02 = gtk.Label("select monitor")
         # create monitor selector widget
         monSelector = MonitorSelector(self.myConf.monitorIds)
         # dropdown menus 1 and 2, users choose what input device map to what monitor.
@@ -115,7 +118,7 @@ class PTXConfUI():
         hbox02.pack_start(label02)
         hbox02.pack_start(monitorDropdown)
         hbox03.pack_start(button_apply)
-        hbox03.pack_start(button_exit)
+        hbox03.pack_start(button_close)
         vbox.pack_start(monSelector, expand=False)
 	vbox.pack_start(hbox01)
         vbox.pack_start(hbox02)
