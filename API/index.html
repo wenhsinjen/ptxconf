@@ -65,6 +65,11 @@
                 <li class="toctree-l3"><a href="#module-confcontroller">Module confcontroller</a></li>
                 
             
+                <li class="toctree-l3"><a href="#functions">Functions</a></li>
+                
+                    <li><a class="toctree-l4" href="#ctmgeneratordw-dh-mw-mh-mx-my">CTMGenerator(dw, dh, mw, mh, mx, my)</a></li>
+                
+            
                 <li class="toctree-l3"><a href="#classes">Classes</a></li>
                 
                     <li><a class="toctree-l4" href="#confcontroller">ConfController</a></li>
@@ -108,6 +113,9 @@
             <div class="section">
               
                 <h1 id="module-confcontroller">Module confcontroller</h1>
+<h1 id="functions">Functions</h1>
+<h2 id="ctmgeneratordw-dh-mw-mh-mx-my">CTMGenerator(dw, dh, mw, mh, mx, my)</h2>
+<p>generate coordinate transform matrix for a tablet controlling screen out of n_screens in a row</p>
 <h1 id="classes">Classes</h1>
 <h2 id="confcontroller">ConfController</h2>
 <p>This class exposes information about pen/tablet pointing device configuration
@@ -115,16 +123,26 @@ and gives methods for reconfiguring those devices</p>
 <h3 id="ancestors-in-mro">Ancestors (in MRO)</h3>
 <p>confcontroller.ConfController</p>
 <h3 id="class-variables">Class variables</h3>
-<p>penIds</p>
+<p>monitorIds
+penIds</p>
 <h3 id="instance-variables">Instance variables</h3>
 <p>penIds</p>
 <h3 id="methods">Methods</h3>
 <h4 id="initself"><strong>init</strong>(self)</h4>
 <h4 id="getdeviceconfigself-id">getDeviceConfig(self, id)</h4>
+<h4 id="getmonitoridsself">getMonitorIds(self)</h4>
+<p>Returns a list of screens composing the default x-display</p>
 <h4 id="getpenidsself">getPenIds(self)</h4>
-<p>Returns a list of input ids for all available pen/tablet xinput devices</p>
+<p>Returns a list of input id/name pairs for all available pen/tablet xinput devices</p>
+<h4 id="refreshself">refresh(self)</h4>
+<h4 id="refreshmonitoridsself">refreshMonitorIds(self)</h4>
+<p>reload monitor layout information</p>
+<h4 id="refreshpenidsself">refreshPenIds(self)</h4>
+<p>reload pen/touch tabled ids</p>
 <h4 id="resetdeviceconfigself-id">resetDeviceConfig(self, id)</h4>
-<h4 id="setdeviceconfigself-id">setDeviceConfig(self, id)</h4>
+<h4 id="setdeviceconfigself-id-ctm05-0-05-0-1-0-0-0-1">setDeviceConfig(self, id, ctm='0.5 0 0.5 0 1 0 0 0 1')</h4>
+<h4 id="setpen2monitorself-pen-monitor">setPen2Monitor(self, pen, monitor)</h4>
+<p>Configure pen to control monitor</p>
               
             </div>
           </div>

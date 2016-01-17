@@ -2,7 +2,7 @@
     "docs": [
         {
             "location": "/", 
-            "text": "PTXConf documentation\n\n\nPen tablet and Touch screen Xinput Configuration tool (PTXConf). \nConfigures touch/pen devices to work with extended desktops and multiple screens on Linux.\n\n\nUsage\n\n\nTODO...\n\n\nInstallation\n\n\nPTXConf depends on the python gtk2 and the AppIndicator binding. On debian based systems you can install these packages as follows,\n\n\n$ sudo apt-get install python-gtk2\n$ sudo apt-get install python-appindicator\n\n\n\n\nThen install this package,\n\n\n$ git clone http://github.com/wenhsinjen/ptxconf.git\n$ cd ptxconf\n$ sudo python setup.py install\n\n\n\n\nAfter this package has been submitted to PyPI you will be able to do,\n\n\n$ sudo pip install ptxconf\n\n\n\n\nAPI code examples\n\n\nSome dummy code for testing MD...\n\n\nfrom ptxconftools import ConfController\ncc = ConfController()\ncc.listDevices()", 
+            "text": "PTXConf documentation\n\n\nPen tablet and Touch screen Xinput Configuration tool (PTXConf). \nConfigures touch/pen devices to work with extended desktops and multiple screens on Linux.\n\n\nUsage\n\n\nAfter starting the application a tablet pen icon sits in the system tray.\n\n\n\n\n\n\nFrom the system tray icon you can access a configuration dialog\n\n\n\n\nThe dialog should show the configuration of your extended desktop as a set of monitors offset from each other.\nHere you can select the input pen/touch device and associate it directly with a particular monitor.\nTo associate the input device and output monitor you must apply the setting using the Apply button.\n\n\nInstallation\n\n\nPTXConf depends on the python gtk2 and the AppIndicator binding. On debian based systems you can install these packages as follows,\n\n\n$ sudo apt-get install python-gtk2\n$ sudo apt-get install python-appindicator\n\n\n\n\nThen install this package,\n\n\n$ git clone http://github.com/wenhsinjen/ptxconf.git\n$ cd ptxconf\n$ sudo python setup.py install\n\n\n\n\nAfter this package has been submitted to PyPI you will be able to do,\n\n\n$ sudo pip install ptxconf\n\n\n\n\nAPI code examples\n\n\nSome dummy code for testing MD...\n\n\nfrom ptxconftools import ConfController\ncc = ConfController()\ncc.listDevices()", 
             "title": "Home"
         }, 
         {
@@ -12,7 +12,7 @@
         }, 
         {
             "location": "/#usage", 
-            "text": "TODO...", 
+            "text": "After starting the application a tablet pen icon sits in the system tray.    From the system tray icon you can access a configuration dialog   The dialog should show the configuration of your extended desktop as a set of monitors offset from each other.\nHere you can select the input pen/touch device and associate it directly with a particular monitor.\nTo associate the input device and output monitor you must apply the setting using the Apply button.", 
             "title": "Usage"
         }, 
         {
@@ -27,7 +27,7 @@
         }, 
         {
             "location": "/API/", 
-            "text": "Module confcontroller\n\n\nClasses\n\n\nConfController\n\n\nThis class exposes information about pen/tablet pointing device configuration\nand gives methods for reconfiguring those devices\n\n\nAncestors (in MRO)\n\n\nconfcontroller.ConfController\n\n\nClass variables\n\n\npenIds\n\n\nInstance variables\n\n\npenIds\n\n\nMethods\n\n\ninit\n(self)\n\n\ngetDeviceConfig(self, id)\n\n\ngetPenIds(self)\n\n\nReturns a list of input ids for all available pen/tablet xinput devices\n\n\nresetDeviceConfig(self, id)\n\n\nsetDeviceConfig(self, id)", 
+            "text": "Module confcontroller\n\n\nFunctions\n\n\nCTMGenerator(dw, dh, mw, mh, mx, my)\n\n\ngenerate coordinate transform matrix for a tablet controlling screen out of n_screens in a row\n\n\nClasses\n\n\nConfController\n\n\nThis class exposes information about pen/tablet pointing device configuration\nand gives methods for reconfiguring those devices\n\n\nAncestors (in MRO)\n\n\nconfcontroller.ConfController\n\n\nClass variables\n\n\nmonitorIds\npenIds\n\n\nInstance variables\n\n\npenIds\n\n\nMethods\n\n\ninit\n(self)\n\n\ngetDeviceConfig(self, id)\n\n\ngetMonitorIds(self)\n\n\nReturns a list of screens composing the default x-display\n\n\ngetPenIds(self)\n\n\nReturns a list of input id/name pairs for all available pen/tablet xinput devices\n\n\nrefresh(self)\n\n\nrefreshMonitorIds(self)\n\n\nreload monitor layout information\n\n\nrefreshPenIds(self)\n\n\nreload pen/touch tabled ids\n\n\nresetDeviceConfig(self, id)\n\n\nsetDeviceConfig(self, id, ctm='0.5 0 0.5 0 1 0 0 0 1')\n\n\nsetPen2Monitor(self, pen, monitor)\n\n\nConfigure pen to control monitor", 
             "title": "API"
         }, 
         {
@@ -36,13 +36,23 @@
             "title": "Module confcontroller"
         }, 
         {
+            "location": "/API/#functions", 
+            "text": "", 
+            "title": "Functions"
+        }, 
+        {
+            "location": "/API/#ctmgeneratordw-dh-mw-mh-mx-my", 
+            "text": "generate coordinate transform matrix for a tablet controlling screen out of n_screens in a row", 
+            "title": "CTMGenerator(dw, dh, mw, mh, mx, my)"
+        }, 
+        {
             "location": "/API/#classes", 
             "text": "", 
             "title": "Classes"
         }, 
         {
             "location": "/API/#confcontroller", 
-            "text": "This class exposes information about pen/tablet pointing device configuration\nand gives methods for reconfiguring those devices  Ancestors (in MRO)  confcontroller.ConfController  Class variables  penIds  Instance variables  penIds  Methods  init (self)  getDeviceConfig(self, id)  getPenIds(self)  Returns a list of input ids for all available pen/tablet xinput devices  resetDeviceConfig(self, id)  setDeviceConfig(self, id)", 
+            "text": "This class exposes information about pen/tablet pointing device configuration\nand gives methods for reconfiguring those devices  Ancestors (in MRO)  confcontroller.ConfController  Class variables  monitorIds\npenIds  Instance variables  penIds  Methods  init (self)  getDeviceConfig(self, id)  getMonitorIds(self)  Returns a list of screens composing the default x-display  getPenIds(self)  Returns a list of input id/name pairs for all available pen/tablet xinput devices  refresh(self)  refreshMonitorIds(self)  reload monitor layout information  refreshPenIds(self)  reload pen/touch tabled ids  resetDeviceConfig(self, id)  setDeviceConfig(self, id, ctm='0.5 0 0.5 0 1 0 0 0 1')  setPen2Monitor(self, pen, monitor)  Configure pen to control monitor", 
             "title": "ConfController"
         }
     ]
