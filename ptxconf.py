@@ -71,6 +71,7 @@ class PTXConfUI():
         # Still incomplete at the moment.
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.window.set_position(gtk.WIN_POS_CENTER)
+        self.window.set_border_width(20)
         self.window.set_title("PTXConf")
         self.window.connect("destroy", self.destroyConfigWindow)
         
@@ -78,10 +79,16 @@ class PTXConfUI():
         button_close = gtk.Button("Close")
 
         button_close.connect("clicked", self.destroyConfigWindow)
-        vbox = gtk.VBox()
-        hbox01 = gtk.HBox()
-        hbox02 = gtk.HBox()
-        hbox03 = gtk.HBox()
+        vbox = gtk.VBox(spacing=20)
+        hbox = gtk.HBox(spacing=20)
+        vboxLeft = gtk.VBox(spacing=6)
+        vboxRight = gtk.VBox(spacing=6)
+        hboxForButtons = gtk.HBox()
+        hboxForButtonsLeft = gtk.HBox(spacing=30)
+        hboxForButtonsRight = gtk.HBox(spacing=10)
+        labelEmptySpace01 = gtk.Label()
+        labelEmptySpace02 = gtk.Label()        
+
         label01 = gtk.Label("tablet id")
         label02 = gtk.Label("select monitor")
         # create monitor selector widget
@@ -113,16 +120,24 @@ class PTXConfUI():
         button_apply.connect("clicked", self.mapTabletToMonitor)
         
         # inserting all widgets in place
-        hbox01.pack_start(label01)
-        hbox01.pack_start(ptDropdown)
-        hbox02.pack_start(label02)
-        hbox02.pack_start(monitorDropdown)
-        hbox03.pack_start(button_apply)
-        hbox03.pack_start(button_close)
+        vboxLeft.pack_start(label01)
+        vboxLeft.pack_start(label02)
+
+        vboxRight.pack_start(ptDropdown)
+        vboxRight.pack_start(monitorDropdown)
+  
+        hboxForButtonsLeft.pack_start(button_apply)
+        hboxForButtonsLeft.pack_start(labelEmptySpace01)
+        hboxForButtonsRight.pack_start(labelEmptySpace02)
+        hboxForButtonsRight.pack_start(button_close)
+        hboxForButtons.pack_start(hboxForButtonsLeft)
+        hboxForButtons.pack_start(hboxForButtonsRight)
+
         vbox.pack_start(monSelector, expand=False)
-	vbox.pack_start(hbox01)
-        vbox.pack_start(hbox02)
-        vbox.pack_start(hbox03)
+        hbox.pack_start(vboxLeft)
+        hbox.pack_start(vboxRight)
+        vbox.pack_start(hbox)
+        vbox.pack_start(hboxForButtons)
         self.window.add(vbox)
         self.window.show_all()
 
