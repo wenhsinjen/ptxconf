@@ -10,36 +10,46 @@ except:
 class ConfController():
     """This class exposes information about pen/tablet pointing device configuration
     and gives methods for reconfiguring those devices"""
-    penIds = None
+    penTouchIds = None
     monitorIds = None
+    display = None
 
     def __init__(self):
-        self.penIds = self.getPenIds()
+        self.penTouchIds = self.getPenTouchIds()
         self.monitorIds, self.display = self.getMonitorIds()
 
     def refresh(self):
         self.refreshMonitorIds()
-        self.refreshPenIds()
+        self.refreshPenTouchIds()
 
     def refreshMonitorIds(self):
         """reload monitor layout information """
         self.monitorIds, self.display = self.getMonitorIds()
 
-    def refreshPenIds(self):
+    def refreshPenTouchIds(self):
         """reload pen/touch tabled ids"""
-        self.penIds = self.getPenIds()
+        self.penTouchIds = self.getPenTouchIds()
 
-    def getPenIds(self):
+    def getPointerDeviceMode(self, id):
+        """Queries the pointer device mode. Returns "asolute" or "relative" """
+        retval = subprocess.Popen("xinput query-state %d"%(id), shell=True, stdout=subprocess.PIPE).stdout.read()
+
+        for line in retval.split("\n"):
+            if "mode=" in line.lower():
+                return line.lower().split("mode=")[1].split(" ")[0]
+        return None
+
+    def getPenTouchIds(self):
         """Returns a list of input id/name pairs for all available pen/tablet xinput devices"""
         retval = subprocess.Popen("xinput list", shell=True, stdout=subprocess.PIPE).stdout.read()
 
         ids = {}
 	for line in retval.split("]"):
             if "pointer" in line.lower() and "master" not in line.lower():
-            #if "pen" in line.lower() and "pointer" in line.lower() and "master" not in line.lower():
                 id = int(line.split("id=")[1].split("[")[0].strip())
                 name = line.split("id=")[0].split("\xb3",1)[1].strip()
-                ids[name]={"id":id}
+                if self.getPointerDeviceMode(id) == "absolute":
+                    ids[name]={"id":id}
         return ids
 
     def getMonitorIds(self):
@@ -79,9 +89,9 @@ class ConfController():
         command = subprocess.Popen("xinput set-prop %d 'Coordinate Transformation Matrix' 1 0 0 0 1 0 0 0 1" % id, shell=True, stdout=subprocess.PIPE).stdout.read()
         return command
 
-    def setPen2Monitor(self, pen, monitor):
+    def setPT2Monitor(self, pen, monitor):
         """Configure pen to control monitor"""
-        penid = self.penIds[pen]["id"]
+        penid = self.penTouchIds[pen]["id"]
         dw = self.display["w"]
         dh = self.display["h"]
         mw = self.monitorIds[monitor]["w"]

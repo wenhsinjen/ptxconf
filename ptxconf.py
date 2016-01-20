@@ -30,7 +30,7 @@ class PTXConfUI():
 
         # attach menu to out system tray
         self.systray.set_menu(menu)
-        
+
         # instantiate confcontroller
         self.myConf = ConfController()
 
@@ -42,7 +42,7 @@ class PTXConfUI():
         b = self.window.ptDropdown.get_active()
         if b > 0:
             return a
-        
+
     def getSelectedMonitor(self, callback_data=None):
         a = self.window.monitorDropdown.get_active_text()
         b = self.window.monitorDropdown.get_active()
@@ -55,7 +55,7 @@ class PTXConfUI():
         # get the display width, screen_width and screen_offset for CTMGenerator function to calculate matrix
         monitor = self.getSelectedMonitor()
         # call API with these settings
-        self.myConf.setPen2Monitor(pen, monitor)
+        self.myConf.setPT2Monitor(pen, monitor)
 
     def exit_program(self, callback_data=None):
         # This function kills the program PTXConf.
@@ -74,7 +74,7 @@ class PTXConfUI():
         self.window.set_border_width(20)
         self.window.set_title("PTXConf")
         self.window.connect("destroy", self.destroyConfigWindow)
-        
+
         button_apply = gtk.Button("Apply")
         button_close = gtk.Button("Close")
 
@@ -87,20 +87,20 @@ class PTXConfUI():
         hboxForButtonsLeft = gtk.HBox(spacing=30)
         hboxForButtonsRight = gtk.HBox(spacing=10)
         labelEmptySpace01 = gtk.Label()
-        labelEmptySpace02 = gtk.Label()        
+        labelEmptySpace02 = gtk.Label()
 
-        label01 = gtk.Label("tablet id")
-        label02 = gtk.Label("select monitor")
+        label01 = gtk.Label("pointer device")
+        label02 = gtk.Label("monitor")
         # create monitor selector widget
         monSelector = MonitorSelector(self.myConf.monitorIds)
         # dropdown menus 1 and 2, users choose what input device map to what monitor.
-        # creat and set up dopdownmenu 1: user select from a list of connected pen input deivces. 
+        # creat and set up dopdownmenu 1: user select from a list of connected pen input deivces.
         ptDropdown = gtk.combo_box_new_text()
         ptDropdown.set_tooltip_text("choose an input device to configure")
         # getting the list of names of the input device
         # set up the dropdown selection for input devices
         ptDropdown.append_text('Select input device:')
-        for i in self.myConf.penIds:
+        for i in self.myConf.penTouchIds:
             ptDropdown.append_text(i)
         ptDropdown.set_active(0)
         # ptDropdown.connect("changed", self.getActiveInput)
@@ -118,14 +118,14 @@ class PTXConfUI():
 
         # connect apply button to function
         button_apply.connect("clicked", self.mapTabletToMonitor)
-        
+
         # inserting all widgets in place
         vboxLeft.pack_start(label01)
         vboxLeft.pack_start(label02)
 
         vboxRight.pack_start(ptDropdown)
         vboxRight.pack_start(monitorDropdown)
-  
+
         hboxForButtonsLeft.pack_start(button_apply)
         hboxForButtonsLeft.pack_start(labelEmptySpace01)
         hboxForButtonsRight.pack_start(labelEmptySpace02)
@@ -169,7 +169,7 @@ class PTXConfUI():
     def destroyConfigWindow(self, callback_data=None):
         # close the popup window, app will still be docked on top menu bar.
 	self.window.destroy()
-    
+
     def main(self):
         gtk.main()
 
