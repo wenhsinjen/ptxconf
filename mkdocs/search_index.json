@@ -2,28 +2,28 @@
     "docs": [
         {
             "location": "/", 
-            "text": "PTXConf documentation\n\n\nPen tablet and Touch screen Xinput Configuration tool (PTXConf). \nConfigures touch/pen devices to work with extended desktops and multiple screens on Linux.\n\n\nUsage\n\n\nAfter starting the application a tablet pen icon sits in the system tray.\n\n\n\n\n\n\nFrom the system tray icon you can access a configuration dialog\n\n\n\n\nThe dialog should show the configuration of your extended desktop as a set of monitors offset from each other.\nHere you can select the input pen/touch device and associate it directly with a particular monitor.\nTo associate the input device and output monitor you must apply the setting using the Apply button.\n\n\nInstallation\n\n\nPTXConf depends on the python gtk2 and the AppIndicator binding. On debian based systems you can install these packages as follows,\n\n\n$ sudo apt-get install python-gtk2\n$ sudo apt-get install python-appindicator\n\n\n\n\nThen install this package,\n\n\n$ git clone http://github.com/wenhsinjen/ptxconf.git\n$ cd ptxconf\n$ sudo python setup.py install\n\n\n\n\nAfter this package has been submitted to PyPI you will be able to do,\n\n\n$ sudo pip install ptxconf\n\n\n\n\nAPI code examples\n\n\nSome dummy code for testing MD...\n\n\nfrom ptxconftools import ConfController\ncc = ConfController()\ncc.listDevices()", 
+            "text": "PTXConf documentation\n\n\nP\nen tablet and \nT\nouch screen \nX\ninput \nConf\niguration tool (\nPTXConf\n).\nConfigures touch/pen devices to work with extended desktops and multiple screens on Linux.\n\n\nUsage\n\n\nTo test this you can simply run the python executable directly from the source directory:\n\n\n$ git clone http://github.com/wenhsinjen/ptxconf.git\n$ cd ptxconf\n$ ./ptxconf.py\n\n\n\n\nIf you find the functionality of this tool useful you can then decide if you want to install, see installation section. After starting the application a tablet pen icon should sit in your system tray:\n\n\n\n\n\n\nFrom the system tray you can then access the configuration dialog:\n\n\n\n\nThe dialog should show the configuration of your extended desktop as a set of monitors offset from each other. Here you can select the input pointer device and associate it directly with a particular monitor. The new mapping does not until after pressing the Apply button.\n\n\nInstallation\n\n\nPTXConf depends on the python gtk2 and the AppIndicator binding. In the current POC state of this software we also depend on the xinput and xrandr command line tools. On debian based systems you can install these packages as follows,\n\n\n$ sudo apt-get install xinput, xrandr\n$ sudo apt-get install python-gtk2, python-appindicator\n\n\n\n\nThen install this package,\n\n\n$ git clone http://github.com/wenhsinjen/ptxconf.git\n$ cd ptxconf\n$ sudo python setup.py install\n\n\n\n\nAfter this package has been submitted to PyPI you will be able to do,\n\n\n$ sudo pip install ptxconf\n\n\n\n\nAPI code example\n\n\nfrom ptxconftools import ConfController\ncc = ConfController()\n\n# list pen/touch like pointing devices\nfor pt in cc.penTouchIds:\n  print pt, cc.penTouchIds[pt]['id']\n\n# list monitor layout\nfor mon in cc.monitorIds:\n  print mon, cc.monitorIds[mon]\n\n# map pointer device 'myPen' to monitor 'hdmi-1'\ncc.setPT2Monitor('myPen','hdmi-1')", 
             "title": "Home"
         }, 
         {
             "location": "/#ptxconf-documentation", 
-            "text": "Pen tablet and Touch screen Xinput Configuration tool (PTXConf). \nConfigures touch/pen devices to work with extended desktops and multiple screens on Linux.", 
+            "text": "P en tablet and  T ouch screen  X input  Conf iguration tool ( PTXConf ).\nConfigures touch/pen devices to work with extended desktops and multiple screens on Linux.", 
             "title": "PTXConf documentation"
         }, 
         {
             "location": "/#usage", 
-            "text": "After starting the application a tablet pen icon sits in the system tray.    From the system tray icon you can access a configuration dialog   The dialog should show the configuration of your extended desktop as a set of monitors offset from each other.\nHere you can select the input pen/touch device and associate it directly with a particular monitor.\nTo associate the input device and output monitor you must apply the setting using the Apply button.", 
+            "text": "To test this you can simply run the python executable directly from the source directory:  $ git clone http://github.com/wenhsinjen/ptxconf.git\n$ cd ptxconf\n$ ./ptxconf.py  If you find the functionality of this tool useful you can then decide if you want to install, see installation section. After starting the application a tablet pen icon should sit in your system tray:    From the system tray you can then access the configuration dialog:   The dialog should show the configuration of your extended desktop as a set of monitors offset from each other. Here you can select the input pointer device and associate it directly with a particular monitor. The new mapping does not until after pressing the Apply button.", 
             "title": "Usage"
         }, 
         {
             "location": "/#installation", 
-            "text": "PTXConf depends on the python gtk2 and the AppIndicator binding. On debian based systems you can install these packages as follows,  $ sudo apt-get install python-gtk2\n$ sudo apt-get install python-appindicator  Then install this package,  $ git clone http://github.com/wenhsinjen/ptxconf.git\n$ cd ptxconf\n$ sudo python setup.py install  After this package has been submitted to PyPI you will be able to do,  $ sudo pip install ptxconf", 
+            "text": "PTXConf depends on the python gtk2 and the AppIndicator binding. In the current POC state of this software we also depend on the xinput and xrandr command line tools. On debian based systems you can install these packages as follows,  $ sudo apt-get install xinput, xrandr\n$ sudo apt-get install python-gtk2, python-appindicator  Then install this package,  $ git clone http://github.com/wenhsinjen/ptxconf.git\n$ cd ptxconf\n$ sudo python setup.py install  After this package has been submitted to PyPI you will be able to do,  $ sudo pip install ptxconf", 
             "title": "Installation"
         }, 
         {
-            "location": "/#api-code-examples", 
-            "text": "Some dummy code for testing MD...  from ptxconftools import ConfController\ncc = ConfController()\ncc.listDevices()", 
-            "title": "API code examples"
+            "location": "/#api-code-example", 
+            "text": "from ptxconftools import ConfController\ncc = ConfController()\n\n# list pen/touch like pointing devices\nfor pt in cc.penTouchIds:\n  print pt, cc.penTouchIds[pt]['id']\n\n# list monitor layout\nfor mon in cc.monitorIds:\n  print mon, cc.monitorIds[mon]\n\n# map pointer device 'myPen' to monitor 'hdmi-1'\ncc.setPT2Monitor('myPen','hdmi-1')", 
+            "title": "API code example"
         }, 
         {
             "location": "/API/", 

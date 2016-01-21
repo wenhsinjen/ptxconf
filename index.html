@@ -61,7 +61,7 @@
                 
                     <li><a class="toctree-l4" href="#installation">Installation</a></li>
                 
-                    <li><a class="toctree-l4" href="#api-code-examples">API code examples</a></li>
+                    <li><a class="toctree-l4" href="#api-code-example">API code example</a></li>
                 
             
             </ul>
@@ -109,21 +109,25 @@
             <div class="section">
               
                 <h1 id="ptxconf-documentation">PTXConf documentation</h1>
-<p>Pen tablet and Touch screen Xinput Configuration tool (PTXConf). 
+<p><strong>P</strong>en tablet and <strong>T</strong>ouch screen <strong>X</strong>input <strong>Conf</strong>iguration tool (<strong>PTXConf</strong>).
 Configures touch/pen devices to work with extended desktops and multiple screens on Linux.</p>
 <h2 id="usage">Usage</h2>
-<p>After starting the application a tablet pen icon sits in the system tray.</p>
+<p>To test this you can simply run the python executable directly from the source directory:</p>
+<pre><code class="sh">$ git clone http://github.com/wenhsinjen/ptxconf.git
+$ cd ptxconf
+$ ./ptxconf.py
+</code></pre>
+
+<p>If you find the functionality of this tool useful you can then decide if you want to install, see installation section. After starting the application a tablet pen icon should sit in your system tray:</p>
 <p><img alt="ptxconf system tray icon" src="./system_tray_icon.jpg" />
 <img alt="ptxconf system tray icon" src="./system_tray_icon_dropdown.jpg" /></p>
-<p>From the system tray icon you can access a configuration dialog</p>
+<p>From the system tray you can then access the configuration dialog:</p>
 <p><img alt="ptxconf config dialog" src="./config_menu.jpg" /></p>
-<p>The dialog should show the configuration of your extended desktop as a set of monitors offset from each other.
-Here you can select the input pen/touch device and associate it directly with a particular monitor.
-To associate the input device and output monitor you must apply the setting using the Apply button.</p>
+<p>The dialog should show the configuration of your extended desktop as a set of monitors offset from each other. Here you can select the input pointer device and associate it directly with a particular monitor. The new mapping does not until after pressing the Apply button.</p>
 <h2 id="installation">Installation</h2>
-<p>PTXConf depends on the python gtk2 and the AppIndicator binding. On debian based systems you can install these packages as follows,</p>
-<pre><code class="sh">$ sudo apt-get install python-gtk2
-$ sudo apt-get install python-appindicator
+<p>PTXConf depends on the python gtk2 and the AppIndicator binding. In the current POC state of this software we also depend on the xinput and xrandr command line tools. On debian based systems you can install these packages as follows,</p>
+<pre><code class="sh">$ sudo apt-get install xinput, xrandr
+$ sudo apt-get install python-gtk2, python-appindicator
 </code></pre>
 
 <p>Then install this package,</p>
@@ -136,11 +140,20 @@ $ sudo python setup.py install
 <pre><code class="sh">$ sudo pip install ptxconf
 </code></pre>
 
-<h2 id="api-code-examples">API code examples</h2>
-<p>Some dummy code for testing MD...</p>
+<h2 id="api-code-example">API code example</h2>
 <pre><code class="python">from ptxconftools import ConfController
 cc = ConfController()
-cc.listDevices()
+
+# list pen/touch like pointing devices
+for pt in cc.penTouchIds:
+  print pt, cc.penTouchIds[pt]['id']
+
+# list monitor layout
+for mon in cc.monitorIds:
+  print mon, cc.monitorIds[mon]
+
+# map pointer device 'myPen' to monitor 'hdmi-1'
+cc.setPT2Monitor('myPen','hdmi-1')
 </code></pre>
               
             </div>
@@ -187,5 +200,5 @@ cc.listDevices()
 
 <!--
 MkDocs version : 0.14.0
-Build Date UTC : 2016-01-17 15:53:35.513227
+Build Date UTC : 2016-01-21 07:34:22.144356
 -->
