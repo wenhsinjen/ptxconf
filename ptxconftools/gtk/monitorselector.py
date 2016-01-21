@@ -17,7 +17,7 @@ class MonitorSelector(gtk.DrawingArea):
         self.connect("expose-event", self.expose)
         self.set_events(gtk.gdk.BUTTON_PRESS_MASK)
         self.connect('button-press-event', self.on_mouse_click)
-        
+
     def set_mon_info(self,moninfo):
         self.moninfo = moninfo.copy()
 
@@ -46,7 +46,7 @@ class MonitorSelector(gtk.DrawingArea):
             if (w+x) > total_w:
                 total_w = w+x
             if (h+y) > total_h:
-                total_h = h+y        
+                total_h = h+y
         return (total_w, total_h)
 
     def _lookup_xy2mon(self, x, y):
@@ -69,7 +69,7 @@ class MonitorSelector(gtk.DrawingArea):
 
         w_wo_margins = w*margin_shrink_x
         h_wo_margins = h*margin_shrink_y
-        
+
         mons_aspect = float(mons_th)/mons_tw
         draw_aspect = float(h_wo_margins)/w_wo_margins
 
@@ -106,4 +106,7 @@ class MonitorSelector(gtk.DrawingArea):
             # Note: inset rectangles by line width so they don't overlap
             cr.rectangle(x+lw,y+lw,w-lw,h-lw)
             cr.stroke()
-
+            cr.set_font_size(12)
+            tx, ty, tw, th, tdx, tdy = cr.text_extents(mon)
+            cr.move_to(x+w/2-tw/2, y+h/2+th/2)
+            cr.show_text(mon)
