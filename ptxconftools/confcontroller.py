@@ -74,6 +74,8 @@ class ConfController():
                 y = int( placement.split("x")[1].split("+")[2] )
                 mon_name = port
                 monitors[mon_name]={"w":w,"h":h,"x":x,"y":y}
+        # add display to monitors
+        monitors["display"]={"w":display0_dim["w"], "h":display0_dim["h"], "x":0, "y":0}
 
         return monitors, display0_dim
 

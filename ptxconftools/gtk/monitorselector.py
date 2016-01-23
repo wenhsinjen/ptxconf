@@ -13,7 +13,7 @@ class MonitorSelector(gtk.DrawingArea):
         gtk.DrawingArea.__init__(self)
         self.set_size_request(250, 150)
         self.set_mon_info(moninfo)
-        self.active_mon = active_mon
+        self.active_mon = active_mon + ""
         self.connect("expose-event", self.expose)
         self.set_events(gtk.gdk.BUTTON_PRESS_MASK)
         self.connect('button-press-event', self.on_mouse_click)
@@ -33,6 +33,7 @@ class MonitorSelector(gtk.DrawingArea):
         self.queue_draw()
 
     def get_active_mon(self):
+        """returns graphically active monitor - including total desktop space dubbed display"""
         return self.active_mon
 
     def monitor_space_px(self):
@@ -52,11 +53,12 @@ class MonitorSelector(gtk.DrawingArea):
     def _lookup_xy2mon(self, x, y):
         mon_rectangles = self._get_mon_rectangles()
         for mon in mon_rectangles:
-            mx, my, mw, mh = mon_rectangles[mon]
-            if x > mx and x < mx+mw and y > my and y < my+mh:
-                # then mouse click on monitor
-                return mon
-        return None
+            if mon != "display":
+                mx, my, mw, mh = mon_rectangles[mon]
+                if x > mx and x < mx+mw and y > my and y < my+mh:
+                    # then mouse click on monitor
+                    return mon
+        return "display"
 
     def _get_mon_rectangles(self):
         w = self.allocation.width
@@ -90,6 +92,12 @@ class MonitorSelector(gtk.DrawingArea):
             mx = float(self.moninfo[mon]['x'])*scale*margin_shrink + margin + cent_x
             my = float(self.moninfo[mon]['y'])*scale*margin_shrink + margin + cent_y
             mon_rectangles[mon] = (mx, my, mw, mh)
+        # finally add total display rectangle
+        mw = float(mons_tw)*scale*margin_shrink
+        mh = float(mons_th)*scale*margin_shrink
+        mx = 0.0 + margin + cent_x
+        my = 0.0 + margin + cent_y
+        mon_rectangles["display"] = (mx, my, mw, mh)
         return mon_rectangles
 
     def expose(self, widget, event):
@@ -102,11 +110,17 @@ class MonitorSelector(gtk.DrawingArea):
                 cr.set_source_rgb(*self.mon_style)
             cr.set_line_width(self.line_width)
             x,y,w,h = mon_rectangles[mon]
-            lw = self.line_width
-            # Note: inset rectangles by line width so they don't overlap
-            cr.rectangle(x+lw,y+lw,w-lw,h-lw)
-            cr.stroke()
-            cr.set_font_size(12)
-            tx, ty, tw, th, tdx, tdy = cr.text_extents(mon)
-            cr.move_to(x+w/2-tw/2, y+h/2+th/2)
-            cr.show_text(mon)
+            if mon != "display":
+                lw = self.line_width
+                # Note: inset rectangles inset by line width so they don't overlap
+                cr.rectangle(x+lw,y+lw,w-lw,h-lw)
+                cr.stroke()
+                cr.set_font_size(12)
+                tx, ty, tw, th, tdx, tdy = cr.text_extents(mon)
+                cr.move_to(x+w/2-tw/2, y+h/2+th/2)
+                cr.show_text(mon)
+            else:
+                # draw total display/desktop with different line/no text
+                cr.set_line_width(self.line_width/2)
+                cr.rectangle(x,y,w+lw,h+lw)
+                cr.stroke()
