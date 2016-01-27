@@ -68,9 +68,14 @@ class ConfController():
                         display0_dim["h"] = int(part.split("current")[1].split("x")[1])
             elif "connected" in line and "disconnected" not in line:
                 port = line.split(" ")[0]
-                for element in line.split(" "):
+                layout_strings = line.split("(")[0].strip().split(" ")
+                for element in layout_strings:
                     if re.match("^[0-9]+x[0-9]+\+[0-9]+\+[0-9]+$",element.strip()) is not None:
                         placement = element
+                if layout_strings[-1].strip().lower() in ("right","left","inverted"):
+                    rotation = layout_strings[-1].strip().lower()
+                else:
+                    rotation = None
                 w = int( placement.split("x")[0] )
                 h = int( placement.split("x")[1].split("+")[0] )
                 x = int( placement.split("x")[1].split("+")[1] )
@@ -78,21 +83,49 @@ class ConfController():
                 mon_name = port
                 monitors[mon_name]={"w":w,"h":h,"x":x,"y":y}
         # add display to monitors
-        monitors["display"]={"w":display0_dim["w"], "h":display0_dim["h"], "x":0, "y":0}
+        monitors["display"]={"w":display0_dim["w"], "h":display0_dim["h"], "x":0, "y":0, "rotation":rotation}
 
         return monitors, display0_dim
 
-    def getDeviceConfig(self, id):
+    def getDeviceCTM(self, id):
         command = subprocess.Popen('xinput list-props %d | grep "Coordinate Transformation Matrix"' % id, shell=True, stdout=subprocess.PIPE).stdout.read()
         return command
 
-    def setDeviceConfig(self, id, ctm="0.5 0 0.5 0 1 0 0 0 1"):
+    def setDeviceCTM(self, id, ctm="0.5 0 0.5 0 1 0 0 0 1"):
         command = subprocess.Popen("xinput set-prop %d 'Coordinate Transformation Matrix' %s" % (id, ctm), shell=True, stdout=subprocess.PIPE).stdout.read()
         return command
 
-    def resetDeviceConfig(self, id):
+    def resetDeviceCTM(self, id):
         command = subprocess.Popen("xinput set-prop %d 'Coordinate Transformation Matrix' 1 0 0 0 1 0 0 0 1" % id, shell=True, stdout=subprocess.PIPE).stdout.read()
         return command
+
+    def setDeviceAxesSwap(self, id, swap=False):
+        command = subprocess.Popen("xinput set-prop %d 'Evdev Axes Swap' %d" % (id, int(swap)), shell=True, stdout=subprocess.PIPE).stdout.read()
+        return command
+
+    def setDeviceAxisInversion(self, id, xinv=False, yinv=False):
+        command = subprocess.Popen("xinput set-prop %d 'Evdev Axis Inversion' %d %d" % (id, int(xinv), int(yinv)), shell=True, stdout=subprocess.PIPE).stdout.read()
+        return command
+
+    def setDeviceAxisRotation(self, id, rotation=None):
+        if rotation == "right":
+            swap = True
+            xinv = False
+            yinv = True
+        elif rotation == "left":
+            swap = True
+            xinv = True
+            yinv = False
+        elif rotation == "inverted":
+            swap = False
+            xinv = True
+            yinv = True
+        else:
+            swap = False
+            xinv = False
+            yinv = False
+        self.setDeviceAxesSwap(id,swap)
+        self.setDeviceAxisInversion(id,xinv,yinv)
 
     def setPT2Monitor(self, pen, monitor):
         """Configure pen to control monitor"""
@@ -103,9 +136,11 @@ class ConfController():
         mh = self.monitorIds[monitor]["h"]
         mx = self.monitorIds[monitor]["x"]
         my = self.monitorIds[monitor]["y"]
+        rot = self.monitorIds[monitor]["rotation"]
         ctm = CTMGenerator( dw, dh, mw, mh, mx, my)
-        self.resetDeviceConfig(penid)
-        self.setDeviceConfig(penid, ctm)
+        #self.resetDeviceCTM(penid)
+        self.setDeviceCTM(penid, ctm)
+        self.setDeviceAxisRotation(penid,rot)
 
 def CTMGenerator( dw, dh, mw, mh, mx, my ):
     """generate coordinate transform matrix for a tablet controlling screen out of n_screens in a row"""
