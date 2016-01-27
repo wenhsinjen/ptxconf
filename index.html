@@ -112,18 +112,28 @@
 <p><strong>P</strong>en tablet and <strong>T</strong>ouch screen <strong>X</strong>input <strong>Conf</strong>iguration tool (<strong>PTXConf</strong>).
 Configures touch/pen devices to work with extended desktops and multiple screens on Linux.</p>
 <h2 id="usage">Usage</h2>
-<p>To test this you can simply run the python executable directly from the source directory:</p>
+<p>To test ptxconf without installing it you can simply run the python executable directly from the source directory:</p>
 <pre><code class="sh">$ git clone http://github.com/wenhsinjen/ptxconf.git
 $ cd ptxconf
 $ ./ptxconf.py
 </code></pre>
 
-<p>If you find the functionality of this tool useful you can then decide if you want to install, see installation section. After starting the application a tablet pen icon should sit in your system tray:</p>
+<p>NOTE: You may need to install the following dependencies first.
+On Debian or Ubuntu based systems you can install the following packages before running PTXConf:</p>
+<pre><code class="sh">$ sudo apt-get install xinput x11-xserver-utils
+$ sudo apt-get install python-gtk2, python-appindicator
+</code></pre>
+
+<p>After starting the application a tablet pen icon should sit in your system tray:</p>
 <p><img alt="ptxconf system tray icon" src="./system_tray_icon.jpg" />
 <img alt="ptxconf system tray icon" src="./system_tray_icon_dropdown.jpg" /></p>
 <p>From the system tray you can then access the configuration dialog:</p>
 <p><img alt="ptxconf config dialog" src="./config_menu.jpg" /></p>
 <p>The dialog should show the configuration of your extended desktop as a set of monitors offset from each other. Here you can select the input pointer device and associate it directly with a particular monitor. The new mapping does not until after pressing the Apply button.</p>
+<p>The dialog should handle all variations of monitor offsets, including
+screen rotation. You should also be able to return to default whole desktop configuration by selecting the entire display rectangle.</p>
+<p><img alt="ptxconf config dialog" src="./config_menu_w_rotation.jpg" /></p>
+<p>NOTE: Currently ptxconf rotates the xinput axis to match the XWindows screen rotation. This is useful for those that have pen or touch screens, but may be less useful or even problematic for those that have pen or touch tablets. So please let us know if we should improve this.</p>
 <h2 id="installation">Installation</h2>
 <p>PTXConf depends on the python gtk2 and the AppIndicator binding. In the current POC state of this software we also depend on the xinput and xrandr command line tools. On debian based systems you can install these packages as follows,</p>
 <pre><code class="sh">$ sudo apt-get install xinput x11-xserver-utils
@@ -200,5 +210,5 @@ cc.setPT2Monitor('myPen','hdmi-1')
 
 <!--
 MkDocs version : 0.14.0
-Build Date UTC : 2016-01-27 08:16:44.939977
+Build Date UTC : 2016-01-27 09:55:15.657961
 -->
