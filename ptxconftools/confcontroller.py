@@ -1,5 +1,6 @@
 import sys
 import subprocess
+import re
 
 try:
     import configparser
@@ -67,7 +68,9 @@ class ConfController():
                         display0_dim["h"] = int(part.split("current")[1].split("x")[1])
             elif "connected" in line and "disconnected" not in line:
                 port = line.split(" ")[0]
-                placement = line.split("(")[0].strip().split(" ")[-1]
+                for element in line.split(" "):
+                    if re.match("^[0-9]+x[0-9]+\+[0-9]+\+[0-9]+$",element.strip()) is not None:
+                        placement = element
                 w = int( placement.split("x")[0] )
                 h = int( placement.split("x")[1].split("+")[0] )
                 x = int( placement.split("x")[1].split("+")[1] )

@@ -24,7 +24,7 @@ The dialog should show the configuration of your extended desktop as a set of mo
 ## Installation
 PTXConf depends on the python gtk2 and the AppIndicator binding. In the current POC state of this software we also depend on the xinput and xrandr command line tools. On debian based systems you can install these packages as follows,
 ```sh
-$ sudo apt-get install xinput, xrandr
+$ sudo apt-get install xinput x11-xserver-utils
 $ sudo apt-get install python-gtk2, python-appindicator
 ```
 Then install this package,
