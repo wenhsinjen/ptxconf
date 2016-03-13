@@ -110,8 +110,8 @@ class MonitorSelector(gtk.DrawingArea):
                 cr.set_source_rgb(*self.mon_style)
             cr.set_line_width(self.line_width)
             x,y,w,h = mon_rectangles[mon]
+            lw = self.line_width
             if mon != "display":
-                lw = self.line_width
                 # Note: inset rectangles inset by line width so they don't overlap
                 cr.rectangle(x+lw,y+lw,w-lw,h-lw)
                 cr.stroke()
