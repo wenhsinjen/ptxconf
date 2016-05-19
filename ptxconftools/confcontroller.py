@@ -45,12 +45,12 @@ class ConfController():
         retval = subprocess.Popen("xinput list", shell=True, stdout=subprocess.PIPE).stdout.read()
 
         ids = {}
-	for line in retval.split("]"):
+        for line in retval.split("]"):
             if "pointer" in line.lower() and "master" not in line.lower():
                 id = int(line.split("id=")[1].split("[")[0].strip())
                 name = line.split("id=")[0].split("\xb3",1)[1].strip()
                 if self.getPointerDeviceMode(id) == "absolute":
-                    ids[name]={"id":id}
+                    ids[name+"(%d)"%id]={"id":id}
         return ids
 
     def getMonitorIds(self):
