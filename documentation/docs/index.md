@@ -14,7 +14,7 @@ NOTE: You may need to install the following dependencies first.
 On Debian or Ubuntu based systems you can install the following packages before running PTXConf:
 ```sh
 $ sudo apt-get install xinput x11-xserver-utils
-$ sudo apt-get install python-gtk2, python-appindicator
+$ sudo apt-get install python-gtk2 python-appindicator
 ```
 
 After starting the application a tablet pen icon should sit in your system tray:
