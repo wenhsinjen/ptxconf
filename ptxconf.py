@@ -9,7 +9,6 @@ import gtk
 import os
 
 iconpath = os.path.dirname( ptxconftools.__file__ )+"/iconStyle03_256.png"
-print iconpath
 
 class PTXConfUI():
     def __init__(self):
