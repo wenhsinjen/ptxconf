@@ -26,7 +26,7 @@ From the system tray you can then access the configuration dialog:
 
 ![ptxconf config dialog](config_menu.jpg)
 
-The dialog should show the configuration of your extended desktop as a set of monitors offset from each other. Here you can select the input pointer device and associate it directly with a particular monitor. The new mapping does not until after pressing the Apply button.
+The dialog should show the configuration of your extended desktop as a set of monitors offset from each other. Here you can select the input pointer device and associate it directly with a particular monitor. The new mapping does not take effect until pressing the Apply button.
 
 The dialog should handle all variations of monitor offsets, including
 screen rotation. You should also be able to return to default whole desktop configuration by selecting the entire display rectangle.
