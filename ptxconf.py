@@ -167,7 +167,7 @@ class PTXConfUI():
 
     def destroyConfigWindow(self, callback_data=None):
         # close the popup window, app will still be docked on top menu bar.
-	self.window.destroy()
+        self.window.destroy()
 
     def main(self):
         gtk.main()
