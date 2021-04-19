@@ -4,7 +4,7 @@
 # Author:	Charlie Martínez® <cmartinez@quirinux.org>
 # License:	https://www.gnu.org/licenses/gpl-3.0.txt
 # Description:	PTXConf Debian Buster Installer
-# Version:	1.00-Beta
+# Version:	1.0.0
 
 clear
 
