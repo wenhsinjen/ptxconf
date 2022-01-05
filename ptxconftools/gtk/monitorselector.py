@@ -1,6 +1,12 @@
 #! /usr/bin/python
 
-import gtk
+import os
+import gi
+gi.require_version('Gtk', '3.0')
+gi.require_version('AppIndicator3', '0.1')
+from gi.repository import Gtk as gtk
+from gi.repository import Gdk as gdk
+# import gtk
 import math
 
 class MonitorSelector(gtk.DrawingArea):
@@ -14,8 +20,8 @@ class MonitorSelector(gtk.DrawingArea):
         self.set_size_request(250, 150)
         self.set_mon_info(moninfo)
         self.active_mon = active_mon + ""
-        self.connect("expose-event", self.expose)
-        self.set_events(gtk.gdk.BUTTON_PRESS_MASK)
+        # self.connect("expose-event", self.expose)
+        self.set_events(gdk.EventMask.BUTTON_PRESS_MASK)
         self.connect('button-press-event', self.on_mouse_click)
 
     def set_mon_info(self,moninfo):
