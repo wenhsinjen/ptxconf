@@ -1,6 +1,7 @@
 import sys
 import subprocess
 import re
+import numpy as np
 
 try:
     import configparser
@@ -89,10 +90,16 @@ class ConfController():
 
     def getDeviceCTM(self, id):
         command = subprocess.Popen('xinput list-props %d | grep "Coordinate Transformation Matrix"' % id, shell=True, stdout=subprocess.PIPE).stdout.read().decode()
+        coordinates = [float(val) for val in re.findall(r"-?\d.\d+", command)]
+        return coordinates
+
+    def setDeviceCTM(self, id, ctm=[0.5, 0, 0.5, 0, 1, 0, 0, 0, 1]):
+        ctm = " ".join([str(item) for item in ctm])
+        command = subprocess.Popen("xinput set-prop %d 'Coordinate Transformation Matrix' %s" % (id, ctm), shell=True, stdout=subprocess.PIPE).stdout.read().decode()
         return command
 
-    def setDeviceCTM(self, id, ctm="0.5 0 0.5 0 1 0 0 0 1"):
-        command = subprocess.Popen("xinput set-prop %d 'Coordinate Transformation Matrix' %s" % (id, ctm), shell=True, stdout=subprocess.PIPE).stdout.read().decode()
+    def setDeviceOutputMap(self, id, output):
+        command = subprocess.Popen("xinput --map-to-output %d %s" % (id, output), shell=True, stdout=subprocess.PIPE).stdout.read().decode()
         return command
 
     def resetDeviceCTM(self, id):
@@ -126,6 +133,7 @@ class ConfController():
             yinv = False
         self.setDeviceAxesSwap(id,swap)
         self.setDeviceAxisInversion(id,xinv,yinv)
+        return ctm
 
     def setPT2Monitor(self, pen, monitor):
         """Configure pen to control monitor"""
@@ -137,11 +145,14 @@ class ConfController():
         mx = self.monitorIds[monitor]["x"]
         my = self.monitorIds[monitor]["y"]
         rot = self.monitorIds[monitor]["rotation"]
-        ctm = CTMGenerator( dw, dh, mw, mh, mx, my)
-        #self.resetDeviceCTM(penid)
-        self.setDeviceCTM(penid, ctm)
-        self.setDeviceAxisRotation(penid,rot)
+        # original_ctm = self.getDeviceCTM(penid)
+        # adjusted_ctm = CTMGenerator( dw, dh, mw, mh, mx, my)
+        # self.resetDeviceCTM(penid)
+        # self.setDeviceCTM(penid, rotation_mat)
+        # self.setDeviceAxisRotation(penid,rot)
+        self.setDeviceOutputMap(penid, monitor)
 
 def CTMGenerator( dw, dh, mw, mh, mx, my ):
     """generate coordinate transform matrix for a tablet controlling screen out of n_screens in a row"""
-    return "%f 0 %f 0 %f %f 0 0 1"%(float(mw)/dw, float(mx)/dw, float(mh)/dh, float(my)/dh)
+    # returns a normal rightside up matrix and the correct fractions
+    return [float(mw)/dw, 0, float(mx)/dw, 0, float(mh)/dh, float(my)/dh, 0, 0, 1]

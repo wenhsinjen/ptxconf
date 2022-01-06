@@ -2,15 +2,11 @@
 import ptxconftools
 from ptxconftools import ConfController
 from ptxconftools.gtk import MonitorSelector
-# import pygtk
-# import appindicator
-# pygtk.require('2.0')
 import os
 import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('AppIndicator3', '0.1')
 from gi.repository import Gtk as gtk, AppIndicator3 as appindicator
-# import gtk
 
 iconpath = os.path.dirname( ptxconftools.__file__ )+"/iconStyle03_256.png"
 
