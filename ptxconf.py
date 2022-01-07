@@ -2,19 +2,20 @@
 import ptxconftools
 from ptxconftools import ConfController
 from ptxconftools.gtk import MonitorSelector
-import pygtk
-import appindicator
-pygtk.require('2.0')
-import gtk
 import os
+import gi
+gi.require_version('Gtk', '3.0')
+gi.require_version('AppIndicator3', '0.1')
+from gi.repository import Gtk as gtk, AppIndicator3 as appindicator
 
 iconpath = os.path.dirname( ptxconftools.__file__ )+"/iconStyle03_256.png"
 
 class PTXConfUI():
     def __init__(self):
         # create systray interface
-        self.systray = appindicator.Indicator( "testname", iconpath, appindicator.CATEGORY_APPLICATION_STATUS)
-        self.systray.set_status(appindicator.STATUS_ACTIVE)
+        # self.systray = appindicator.Indicator( "testname", iconpath, appindicator.CATEGORY_APPLICATION_STATUS)
+        self.systray = appindicator.Indicator.new( "testname", iconpath, appindicator.IndicatorCategory.APPLICATION_STATUS)
+        self.systray.set_status(appindicator.IndicatorStatus.ACTIVE)
 
         # construct menu
         menu = gtk.Menu()
@@ -68,8 +69,8 @@ class PTXConfUI():
 
         # This creats a popup window for more detailed configuration if user find necessary.
         # Still incomplete at the moment.
-        self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-        self.window.set_position(gtk.WIN_POS_CENTER)
+        self.window = gtk.Window(gtk.WindowType.TOPLEVEL)
+        self.window.set_position(gtk.WindowPosition.CENTER)
         self.window.set_border_width(20)
         self.window.set_title("PTXConf")
         self.window.connect("destroy", self.destroyConfigWindow)
@@ -94,7 +95,7 @@ class PTXConfUI():
         monSelector = MonitorSelector(self.myConf.monitorIds)
         # dropdown menus 1 and 2, users choose what input device map to what monitor.
         # creat and set up dopdownmenu 1: user select from a list of connected pen input deivces.
-        ptDropdown = gtk.combo_box_new_text()
+        ptDropdown = gtk.ComboBoxText()
         ptDropdown.set_tooltip_text("choose an input device to configure")
         # getting the list of names of the input device
         # set up the dropdown selection for input devices
@@ -104,7 +105,7 @@ class PTXConfUI():
         ptDropdown.set_active(0)
         # ptDropdown.connect("changed", self.getActiveInput)
         # creat and set up dopdownmenu 2: user select from a list of connected display/output deivces.
-        monitorDropdown = gtk.combo_box_new_text()
+        monitorDropdown = gtk.ComboBoxText()
         monitorDropdown.set_tooltip_text("choose a monitor to map the input to")
         # getting the list of display names
         # set up the dropdown selection for monitors
@@ -119,24 +120,25 @@ class PTXConfUI():
         button_apply.connect("clicked", self.mapTabletToMonitor)
 
         # inserting all widgets in place
-        vboxLeft.pack_start(label01)
-        vboxLeft.pack_start(label02)
+        vboxLeft.pack_start(label01, False, False, True)
+        vboxLeft.pack_start(label02, False, False, True)
 
-        vboxRight.pack_start(ptDropdown)
-        vboxRight.pack_start(monitorDropdown)
+        vboxRight.pack_start(ptDropdown, False, False, True)
+        vboxRight.pack_start(monitorDropdown, False, False, True)
 
-        hboxForButtonsLeft.pack_start(button_apply)
-        hboxForButtonsLeft.pack_start(labelEmptySpace01)
-        hboxForButtonsRight.pack_start(labelEmptySpace02)
-        hboxForButtonsRight.pack_start(button_close)
-        hboxForButtons.pack_start(hboxForButtonsLeft)
-        hboxForButtons.pack_start(hboxForButtonsRight)
+        hboxForButtonsLeft.pack_start(button_apply, False, False, True)
+        hboxForButtonsLeft.pack_start(labelEmptySpace01, False, False, True)
+        hboxForButtonsRight.pack_start(labelEmptySpace02, False, False, True)
+        hboxForButtonsRight.pack_start(button_close, False, False, True)
+        hboxForButtons.pack_start(hboxForButtonsLeft, False, False, True)
+        hboxForButtons.pack_start(hboxForButtonsRight, False, False, True)
 
-        vbox.pack_start(monSelector, expand=False)
-        hbox.pack_start(vboxLeft)
-        hbox.pack_start(vboxRight)
-        vbox.pack_start(hbox)
-        vbox.pack_start(hboxForButtons)
+        # vbox.pack_start(monSelector, False, False, True, expand=False)
+        vbox.pack_start(monSelector, False, False, True)
+        hbox.pack_start(vboxLeft, False, False, True)
+        hbox.pack_start(vboxRight, False, False, True)
+        vbox.pack_start(hbox, False, False, True)
+        vbox.pack_start(hboxForButtons, False, False, True)
         self.window.add(vbox)
         self.window.show_all()
 
