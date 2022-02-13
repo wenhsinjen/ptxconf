@@ -8,8 +8,7 @@ try:
 except:
     import ConfigParser as configparser
 
-
-class ConfController():
+class ConfController:
     """This class exposes information about pen/tablet pointing device configuration
     and gives methods for reconfiguring those devices"""
     penTouchIds = None
