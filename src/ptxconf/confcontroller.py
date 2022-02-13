@@ -55,9 +55,9 @@ class ConfController:
         for line in retval.split("]"):
             if "pointer" in line.lower() and "master" not in line.lower():
                 id = int(line.split("id=")[1].split("[")[0].strip())
-                name = line.split("id=")[0].encode().split(b"\xb3",1)[1].strip().decode()
+                name = line.split("id=")[0].encode().split(b"\xb3", 1)[1].strip().decode()
                 if self.getPointerDeviceMode(id) == "absolute":
-                    ids[name+"(%d)"%id]={"id":id}
+                    ids[name + "(%d)" % id] = {"id": id}
         return ids
 
     def getMonitorIds(self):
@@ -69,7 +69,7 @@ class ConfController:
         monitors = {}
         id = 1
         for line in retval.split("\n"):
-            if "Screen 0" == line[:8]:
+            if line[:8] == "Screen 0":
                 # here the xrandr dev meant to call it display 0 in line with xorg.
                 for part in line.split(", "):
                     if "current" in part:
@@ -79,16 +79,17 @@ class ConfController:
                 port = line.split(" ")[0]
                 layout_strings = line.split("(")[0].strip().split(" ")
                 for element in layout_strings:
-                    if re.match("^[0-9]+x[0-9]+\+[0-9]+\+[0-9]+$",element.strip()) is not None:
+                    if match("^[0-9]+x[0-9]+\+[0-9]+\+[0-9]+$", element.strip()) is not None:
                         placement = element
-                if layout_strings[-1].strip().lower() in ("right","left","inverted"):
+                if layout_strings[-1].strip().lower() in ("right", "left", "inverted"):
                     rotation = layout_strings[-1].strip().lower()
                 else:
                     rotation = None
-                w = int( placement.split("x")[0] )
-                h = int( placement.split("x")[1].split("+")[0] )
-                x = int( placement.split("x")[1].split("+")[1] )
-                y = int( placement.split("x")[1].split("+")[2] )
+
+                w = int(placement.split("x")[0])
+                h = int(placement.split("x")[1].split("+")[0])
+                x = int(placement.split("x")[1].split("+")[1])
+                y = int(placement.split("x")[1].split("+")[2])
                 mon_name = port
                 monitors[mon_name] = {"w": w, "h": h, "x": x, "y": y, "rotation": rotation, "id": id}
                 id += 1
@@ -103,7 +104,9 @@ class ConfController:
         retval = self.getOutputCommand(f'xinput list-props {id} | grep "Coordinate Transformation Matrix"')
         return [float(val) for val in findall(r"-?\d.\d+", retval)]
 
-    def setDeviceCTM(self, id, ctm=[0.5, 0, 0.5, 0, 1, 0, 0, 0, 1]):
+    def setDeviceCTM(self, id, ctm=None):
+        if ctm is None:
+            ctm = [0.5, 0, 0.5, 0, 1, 0, 0, 0, 1]
         ctm = " ".join([str(item) for item in ctm])
 
         return self.getOutputCommand(f"xinput set-prop {id} 'Coordinate Transformation Matrix' {ctm}")
@@ -138,9 +141,8 @@ class ConfController:
             swap = False
             xinv = False
             yinv = False
-        self.setDeviceAxesSwap(id,swap)
-        self.setDeviceAxisInversion(id,xinv,yinv)
-        return ctm
+        self.setDeviceAxesSwap(id, swap)
+        self.setDeviceAxisInversion(id, xinv, yinv)
 
     def setPT2Monitor(self, pen, monitor):
         """Configure pen to control monitor"""
@@ -152,14 +154,12 @@ class ConfController:
         mx = self.monitorIds[monitor]["x"]
         my = self.monitorIds[monitor]["y"]
         rot = self.monitorIds[monitor]["rotation"]
-        # original_ctm = self.getDeviceCTM(penid)
-        # adjusted_ctm = CTMGenerator( dw, dh, mw, mh, mx, my)
+        ctm = self._CTMGenerator(dw, dh, mw, mh, mx, my)
         # self.resetDeviceCTM(penid)
-        # self.setDeviceCTM(penid, rotation_mat)
-        # self.setDeviceAxisRotation(penid,rot)
-        self.setDeviceOutputMap(penid, monitor)
+        self.setDeviceCTM(penid, ctm)
+        self.setDeviceAxisRotation(penid, rot)
 
-def CTMGenerator( dw, dh, mw, mh, mx, my ):
-    """generate coordinate transform matrix for a tablet controlling screen out of n_screens in a row"""
-    # returns a normal rightside up matrix and the correct fractions
-    return [float(mw)/dw, 0, float(mx)/dw, 0, float(mh)/dh, float(my)/dh, 0, 0, 1]
+    def _CTMGenerator(self, dw, dh, mw, mh, mx, my):
+        """generate coordinate transform matrix for a tablet controlling screen out of n_screens in a row"""
+        # returns a normal rightside up matrix and the correct fractions
+        return [float(mw) / dw, 0, float(mx) / dw, 0, float(mh) / dh, float(my) / dh, 0, 0, 1]
