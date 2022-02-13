@@ -64,8 +64,10 @@ class ConfController:
         """Returns a list of screens composing the default x-display"""
         retval = self.getOutputCommand("xrandr")
 
-        display0_dim = {"w":None,"h":None}
+        display0_dim = {"w": None, "h": None}
+
         monitors = {}
+        id = 1
         for line in retval.split("\n"):
             if "Screen 0" == line[:8]:
                 # here the xrandr dev meant to call it display 0 in line with xorg.
@@ -88,9 +90,12 @@ class ConfController:
                 x = int( placement.split("x")[1].split("+")[1] )
                 y = int( placement.split("x")[1].split("+")[2] )
                 mon_name = port
-                monitors[mon_name]={"w":w, "h":h, "x":x, "y":y, "rotation":rotation}
+                monitors[mon_name] = {"w": w, "h": h, "x": x, "y": y, "rotation": rotation, "id": id}
+                id += 1
+
         # add display to monitors
-        monitors["display"]={"w":display0_dim["w"], "h":display0_dim["h"], "x":0, "y":0, "rotation":None}
+        monitors["display"] = {"w": display0_dim["w"], "h": display0_dim["h"], "x": 0, "y": 0,
+                               "rotation": None, "id": id}
 
         return monitors, display0_dim
 
