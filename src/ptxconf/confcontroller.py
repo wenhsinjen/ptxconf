@@ -1,12 +1,6 @@
-import sys
-import subprocess
-import re
-import numpy as np
+from subprocess import Popen, PIPE
+from re import match, findall
 
-try:
-    import configparser
-except:
-    import ConfigParser as configparser
 
 class ConfController:
     """This class exposes information about pen/tablet pointing device configuration
