@@ -25,6 +25,19 @@ class ConfController:
         """reload pen/touch tabled ids"""
         self.penTouchIds = self.getPenTouchIds()
 
+    def getOutputCommand(self, command, **kwargs):
+        # from docs: "[...] the use of shell=True is strongly discouraged in cases where the command string
+        # is constructed from external input"
+        # http://docs.python.org/2/library/subprocess.html#frequently-used-arguments
+        process = Popen(command, stdout=PIPE, stderr=PIPE, universal_newlines=True, shell=True, **kwargs)
+        retval, stderr = process.communicate()
+
+        if stderr:
+            import inspect
+            # get previous function name from inspect.stack()[1][3]
+            print(f"Errro call from: {inspect.stack()[1][3]}. {stderr}")
+        return retval
+
     def getPointerDeviceMode(self, id):
         """Queries the pointer device mode. Returns "asolute" or "relative" """
         retval = subprocess.Popen("xinput query-state %d"%(id), shell=True, stdout=subprocess.PIPE).stdout.read().decode()
