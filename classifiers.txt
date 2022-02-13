@@ -1,0 +1,6 @@
+Development Status :: 4 - Beta
+Programming Language :: Python :: 3.7
+Natural Language :: English
+License :: OSI Approved :: GNU Affero General Public License v3
+Operating System :: OS Independent
+Topic :: Software Development
