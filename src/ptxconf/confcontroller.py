@@ -1,14 +1,8 @@
-import sys
-import subprocess
-import re
-
-try:
-    import configparser
-except:
-    import ConfigParser as configparser
+from subprocess import Popen, PIPE
+from re import match, findall
 
 
-class ConfController():
+class ConfController:
     """This class exposes information about pen/tablet pointing device configuration
     and gives methods for reconfiguring those devices"""
     penTouchIds = None
@@ -31,9 +25,22 @@ class ConfController():
         """reload pen/touch tabled ids"""
         self.penTouchIds = self.getPenTouchIds()
 
+    def getOutputCommand(self, command, **kwargs):
+        # from docs: "[...] the use of shell=True is strongly discouraged in cases where the command string
+        # is constructed from external input"
+        # http://docs.python.org/2/library/subprocess.html#frequently-used-arguments
+        process = Popen(command, stdout=PIPE, stderr=PIPE, universal_newlines=True, shell=True, **kwargs)
+        retval, stderr = process.communicate()
+
+        if stderr:
+            import inspect
+            # get previous function name from inspect.stack()[1][3]
+            print(f"Errro call from: {inspect.stack()[1][3]}. {stderr}")
+        return retval
+
     def getPointerDeviceMode(self, id):
         """Queries the pointer device mode. Returns "asolute" or "relative" """
-        retval = subprocess.Popen("xinput query-state %d"%(id), shell=True, stdout=subprocess.PIPE).stdout.read()
+        retval = self.getOutputCommand(f"xinput query-state {id}")
 
         for line in retval.split("\n"):
             if "mode=" in line.lower():
@@ -42,25 +49,27 @@ class ConfController():
 
     def getPenTouchIds(self):
         """Returns a list of input id/name pairs for all available pen/tablet xinput devices"""
-        retval = subprocess.Popen("xinput list", shell=True, stdout=subprocess.PIPE).stdout.read()
+        retval = self.getOutputCommand("xinput list")
 
         ids = {}
         for line in retval.split("]"):
             if "pointer" in line.lower() and "master" not in line.lower():
                 id = int(line.split("id=")[1].split("[")[0].strip())
-                name = line.split("id=")[0].split("\xb3",1)[1].strip()
+                name = line.split("id=")[0].encode().split(b"\xb3", 1)[1].strip().decode()
                 if self.getPointerDeviceMode(id) == "absolute":
-                    ids[name+"(%d)"%id]={"id":id}
+                    ids[name + "(%d)" % id] = {"id": id}
         return ids
 
     def getMonitorIds(self):
         """Returns a list of screens composing the default x-display"""
-        retval = subprocess.Popen("xrandr", shell=True, stdout=subprocess.PIPE).stdout.read()
+        retval = self.getOutputCommand("xrandr")
 
-        display0_dim = {"w":None,"h":None}
+        display0_dim = {"w": None, "h": None}
+
         monitors = {}
+        id = 1
         for line in retval.split("\n"):
-            if "Screen 0" == line[:8]:
+            if line[:8] == "Screen 0":
                 # here the xrandr dev meant to call it display 0 in line with xorg.
                 for part in line.split(", "):
                     if "current" in part:
@@ -70,42 +79,50 @@ class ConfController():
                 port = line.split(" ")[0]
                 layout_strings = line.split("(")[0].strip().split(" ")
                 for element in layout_strings:
-                    if re.match("^[0-9]+x[0-9]+\+[0-9]+\+[0-9]+$",element.strip()) is not None:
+                    if match("^[0-9]+x[0-9]+\+[0-9]+\+[0-9]+$", element.strip()) is not None:
                         placement = element
-                if layout_strings[-1].strip().lower() in ("right","left","inverted"):
+                if layout_strings[-1].strip().lower() in ("right", "left", "inverted"):
                     rotation = layout_strings[-1].strip().lower()
                 else:
                     rotation = None
-                w = int( placement.split("x")[0] )
-                h = int( placement.split("x")[1].split("+")[0] )
-                x = int( placement.split("x")[1].split("+")[1] )
-                y = int( placement.split("x")[1].split("+")[2] )
+
+                w = int(placement.split("x")[0])
+                h = int(placement.split("x")[1].split("+")[0])
+                x = int(placement.split("x")[1].split("+")[1])
+                y = int(placement.split("x")[1].split("+")[2])
                 mon_name = port
-                monitors[mon_name]={"w":w, "h":h, "x":x, "y":y, "rotation":rotation}
+                monitors[mon_name] = {"w": w, "h": h, "x": x, "y": y, "rotation": rotation, "id": id}
+                id += 1
+
         # add display to monitors
-        monitors["display"]={"w":display0_dim["w"], "h":display0_dim["h"], "x":0, "y":0, "rotation":None}
+        monitors["display"] = {"w": display0_dim["w"], "h": display0_dim["h"], "x": 0, "y": 0,
+                               "rotation": None, "id": id}
 
         return monitors, display0_dim
 
     def getDeviceCTM(self, id):
-        command = subprocess.Popen('xinput list-props %d | grep "Coordinate Transformation Matrix"' % id, shell=True, stdout=subprocess.PIPE).stdout.read()
-        return command
+        retval = self.getOutputCommand(f'xinput list-props {id} | grep "Coordinate Transformation Matrix"')
+        return [float(val) for val in findall(r"-?\d.\d+", retval)]
 
-    def setDeviceCTM(self, id, ctm="0.5 0 0.5 0 1 0 0 0 1"):
-        command = subprocess.Popen("xinput set-prop %d 'Coordinate Transformation Matrix' %s" % (id, ctm), shell=True, stdout=subprocess.PIPE).stdout.read()
-        return command
+    def setDeviceCTM(self, id, ctm=None):
+        if ctm is None:
+            ctm = [0.5, 0, 0.5, 0, 1, 0, 0, 0, 1]
+        ctm = " ".join([str(item) for item in ctm])
+
+        return self.getOutputCommand(f"xinput set-prop {id} 'Coordinate Transformation Matrix' {ctm}")
+
+    def setDeviceOutputMap(self, id, output):
+        return self.getOutputCommand(f"xinput --map-to-output {id} {output}")
 
     def resetDeviceCTM(self, id):
-        command = subprocess.Popen("xinput set-prop %d 'Coordinate Transformation Matrix' 1 0 0 0 1 0 0 0 1" % id, shell=True, stdout=subprocess.PIPE).stdout.read()
-        return command
+        return self.getOutputCommand(
+            f"xinput set-prop {id} 'Coordinate Transformation Matrix' 1 0 0 0 1 0 0 0 1")
 
     def setDeviceAxesSwap(self, id, swap=False):
-        command = subprocess.Popen("xinput set-prop %d 'Evdev Axes Swap' %d" % (id, int(swap)), shell=True, stdout=subprocess.PIPE).stdout.read()
-        return command
+        return self.getOutputCommand(f"xinput set-prop {id} 'Evdev Axes Swap' {int(swap)}")
 
     def setDeviceAxisInversion(self, id, xinv=False, yinv=False):
-        command = subprocess.Popen("xinput set-prop %d 'Evdev Axis Inversion' %d %d" % (id, int(xinv), int(yinv)), shell=True, stdout=subprocess.PIPE).stdout.read()
-        return command
+        return self.getOutputCommand(f"xinput set-prop {id} 'Evdev Axis Inversion' {int(xinv)} {int(yinv)}")
 
     def setDeviceAxisRotation(self, id, rotation=None):
         if rotation == "right":
@@ -124,8 +141,8 @@ class ConfController():
             swap = False
             xinv = False
             yinv = False
-        self.setDeviceAxesSwap(id,swap)
-        self.setDeviceAxisInversion(id,xinv,yinv)
+        self.setDeviceAxesSwap(id, swap)
+        self.setDeviceAxisInversion(id, xinv, yinv)
 
     def setPT2Monitor(self, pen, monitor):
         """Configure pen to control monitor"""
@@ -137,11 +154,12 @@ class ConfController():
         mx = self.monitorIds[monitor]["x"]
         my = self.monitorIds[monitor]["y"]
         rot = self.monitorIds[monitor]["rotation"]
-        ctm = CTMGenerator( dw, dh, mw, mh, mx, my)
-        #self.resetDeviceCTM(penid)
+        ctm = self._CTMGenerator(dw, dh, mw, mh, mx, my)
+        # self.resetDeviceCTM(penid)
         self.setDeviceCTM(penid, ctm)
-        self.setDeviceAxisRotation(penid,rot)
+        self.setDeviceAxisRotation(penid, rot)
 
-def CTMGenerator( dw, dh, mw, mh, mx, my ):
-    """generate coordinate transform matrix for a tablet controlling screen out of n_screens in a row"""
-    return "%f 0 %f 0 %f %f 0 0 1"%(float(mw)/dw, float(mx)/dw, float(mh)/dh, float(my)/dh)
+    def _CTMGenerator(self, dw, dh, mw, mh, mx, my):
+        """generate coordinate transform matrix for a tablet controlling screen out of n_screens in a row"""
+        # returns a normal rightside up matrix and the correct fractions
+        return [float(mw) / dw, 0, float(mx) / dw, 0, float(mh) / dh, float(my) / dh, 0, 0, 1]

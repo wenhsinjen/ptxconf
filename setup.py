@@ -1,12 +1,15 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
-from distutils.core import setup
-from ptxconftools import __version__ as version
+from setuptools import setup, find_packages
 
-setup(name='ptxconf',
-      version=version,
-      packages=['ptxconftools', 'ptxconftools.gtk'],
-      package_data={'': ['*.png']},
-      scripts=['./ptxconf.py'])
+# Meta information
+version = open('VERSION').read().strip()
+
+setup(
+    name='ptxconf',
+    version=version,
+    packages=['src/ptxconf', 'src/ptxconf/icon'],
+    package_data={'': ['*.png']},
+    scripts=['./src/ptxconf/ptxconf.py']
+)
